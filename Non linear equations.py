@@ -1,0 +1,54 @@
+import numpy as np
+from scipy.optimize import fsolve
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Define the non-linear equations
+def equations(x):
+    eq1 = x[0] + np.sin(x[1]) - 1.5
+    eq2 = 2 * x[1] + np.cos(x[0]) - 2
+    eq3 = x[2]**2 - 4 * x[3] + 3 * x[4]**3 - 1
+    eq4 = np.exp(x[3]) + x[4] - x[2]**3 + 2
+    eq5 = x[0]**2 + x[1]**2 + x[2]**2 + x[3]**2 + x[4]**2 - 10
+
+    return [eq1, eq2, np.ones_like(x[0])*eq3, np.ones_like(x[0])*eq4, np.ones_like(x[0])*eq5]
+
+# Initial guess
+x0 = np.array([1, 1, 1, 1, 1])
+
+# Solve the equations using fsolve
+x = fsolve(equations, x0)
+
+# Print the solutions
+print("The solutions are: ")
+print("x1 = ", x[0])
+print("x2 = ", x[1])
+print("x3 = ", x[2])
+print("x4 = ", x[3])
+print("x5 = ", x[4])
+
+# Create a 3D plot
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+# Create arrays for x, y, and z values
+x_vals = np.linspace(-5, 5, 100)
+y_vals = np.linspace(-5, 5, 100)
+x_vals, y_vals = np.meshgrid(x_vals, y_vals)
+z_vals1, z_vals2, z_vals3, z_vals4, z_vals5 = equations([x_vals, y_vals, 0, 0, 0])
+
+# Plot each equation on the same plot
+ax.plot_surface(x_vals, y_vals, z_vals1, alpha=0.5, cmap='cool')
+ax.plot_surface(x_vals, y_vals, z_vals2, alpha=0.5, cmap='viridis')
+ax.plot_surface(x_vals, y_vals, z_vals3, alpha=0.5, cmap='magma')
+ax.plot_surface(x_vals, y_vals, z_vals4, alpha=0.5, cmap='inferno')
+ax.plot_surface(x_vals, y_vals, z_vals5, alpha=0.5, cmap='plasma')
+
+# Set the axis labels and title
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_zlabel('z')
+ax.set_title('Non-linear Equations')
+
+# Show the plot
+plt.show()
